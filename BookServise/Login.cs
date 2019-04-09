@@ -28,7 +28,7 @@ namespace BookServise
         public Login()
         {
             InitializeComponent();
-            
+
         }
 
         private void bntLogin_Click(object sender, EventArgs e)
@@ -47,7 +47,7 @@ namespace BookServise
 
                 AccountClient accountClient = new AccountClient();
                 User input = accountClient.Login(txtLogin.Text, txtPassword.Text);
-               
+
                 SqlConnection con = new SqlConnection(@"data source=WCFServise.mssql.somee.com;initial catalog=WCFServise;user id=OlegKret_SQLLogin_1;password=tqyupwho8j");
                 SqlDataAdapter sda = new SqlDataAdapter("Select Role FROM Users Where Login='" + txtLogin.Text + "' and Password='" + txtPassword.Text + "'", con);
                 DataTable dt = new System.Data.DataTable();
@@ -57,16 +57,11 @@ namespace BookServise
                     this.Hide();
                     Parent ss = new Parent(dt.Rows[0][0].ToString());
                     ss.Show();
-                   
                 }
 
-                
                 if (input != null)
                 {
                     MessageBox.Show("Вхід успішний!");
-
-                    
-
                 }
                 if (input == null)
                 {
@@ -106,12 +101,11 @@ namespace BookServise
                 txtEmail.BackColor = System.Drawing.Color.CornflowerBlue;
                 label9.Visible = true;
             }
-          
+
             else
             {
                 if (pictureBox1.Image != null && checkLogin() != true && checkPhone() != true && checkEmail() != true)
                 {
-                  
                     string fname = txtId.Text + ".jpg";
                     string folder = "C:\\Images";
                     string pathstring = System.IO.Path.Combine(folder, fname);
@@ -130,7 +124,6 @@ namespace BookServise
                     byte[] myDataBuffer = webClient.DownloadData(remoteUri);
 
                     User user = new User();
-                  
                     user.Id = Int32.Parse(txtId.Text);
                     user.Login = txt_Login.Text;
                     user.Password = txt_Password.Text;
@@ -139,10 +132,8 @@ namespace BookServise
                     user.role = txtRole.Text;
                     user.Pic = txtPic.Text;
                     user.Image = myDataBuffer;
-                  
                     AccountClient accountClient = new AccountClient();
                     bool registered = accountClient.Register(user);
-                   //accountClient.UploadFile(txtBrowzer.Text, txtPic.Text);
                     if (registered == true)
                     {
                         MessageBox.Show("Користувача зареєстровано!");
@@ -198,7 +189,7 @@ namespace BookServise
                         userToUpdate.Pic = txtPic.Text;
                         userToUpdate.Image = myDataBuffer;
                         accountClient.Save(userToUpdate);
-
+                        //context.SaveChanges();
                         accountClient.Close();
                     }
                 }
@@ -216,7 +207,6 @@ namespace BookServise
             using (var context = new BookLotEntities())
             {
                 User userToDelete = new User() { Id = userId };
- 
                 AccountClient accountClient = new AccountClient();
                 accountClient.Delete(userToDelete);
             }
@@ -227,16 +217,14 @@ namespace BookServise
 
             using (var context = new BookLotEntities())
             {
-
+ 
                 var source = context.Users.ToList();
                 cboUsers.DataSource = source;
-
                 cboUsers.ValueMember = "Id";
                 cboUsers.DisplayMember = "Login";
 
                 cboUsers.Invalidate();
                 cboUsers.DataBindings.Clear();
-
                 txtId.DataBindings.Add("Text", source, "Id", true);
 
                 txt_Login.DataBindings.Add("Text", source, "Login", true);
@@ -247,7 +235,7 @@ namespace BookServise
                 txtRole.DataBindings.Add("Text", source, "role");
                 txtPhoneNumber.DataBindings.Add("Text", source, "PhoneNumber");
                 txtPic.DataBindings.Add("Text", source, "Pic");
-
+                this.pictureBox1.DataBindings.Add(new System.Windows.Forms.Binding("Image", source, "Image", true));
             }
         }
 
@@ -281,12 +269,11 @@ namespace BookServise
                 int userid = (from x in context.Users
                               where x.PhoneNumber == txtPhoneNumber.Text
                               select x.Id).SingleOrDefault();
- 
+
                 if (userid > 0)
                 {
                     phoneavailable = true;
                 }
-
 
                 return phoneavailable;
             }
@@ -319,9 +306,7 @@ namespace BookServise
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 this.pictureBox1.ImageLocation = ofd.FileName;
-
             }
-
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -375,10 +360,8 @@ namespace BookServise
             return true;
         }
 
-
         public Image ByteToImage(byte [] blob)
         {
-            
 
                 MemoryStream ms = new MemoryStream(blob, 0, blob.Length);
                 ms.Write(blob, 0, blob.Length);
@@ -388,12 +371,10 @@ namespace BookServise
             return returnImage;
         }
 
- 
         public byte [] GetImgByte (string ftpFilePath)
         {
             WebClient webClient = new WebClient();
             webClient.Credentials = new NetworkCredential("OlegKret", "26021982OlegKret");
-            //    MessageBox.Show("Downloading " + remoteUri);
             byte[] myDataBuffer = webClient.DownloadData(ftpFilePath);
             return myDataBuffer;
 
@@ -409,8 +390,6 @@ namespace BookServise
 
         private void btn_Image_Click(object sender, EventArgs e)
         {
-
-
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://www.olegkret.somee.com/www.OlegKret.somee.com/BOOOOK/App_Data/Users/Photo/" + txtPic.Text);
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
@@ -418,7 +397,7 @@ namespace BookServise
             request.Credentials = new NetworkCredential("OlegKret", "26021982OlegKret");
 
             // Copy the contents of the file to the request stream.
-            byte[] fileContents=File.ReadAllBytes(ofd.FileName);
+            byte[] fileContents=File.ReadAllBytes(@"C:\Users\MegaBoss\Pictures\Viber\" + txtPic.Text);
           
             
             request.ContentLength = fileContents.Length;
