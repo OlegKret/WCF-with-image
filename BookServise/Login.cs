@@ -285,7 +285,7 @@ namespace BookServise
                 txtPic.DataBindings.Add("Text", source, "Pic");
                 //pictureBox1.DataBindings.Add(new Binding("Image", source, "Pic", true));
                 //var s = from o in context.Users select o;
-
+                //this.pictureBox1.DataBindings.Add(new System.Windows.Forms.Binding("Image", source, "Image", true));
 
             }
         }
@@ -393,7 +393,7 @@ namespace BookServise
         
         private void btnImage_Click(object sender, EventArgs e)
         {
-         DisplayFileFromServer(new Uri("ftp://olegkret.somee.com/www.OlegKret.somee.com/BOOOOK/App_Data/Users/Photo/" + txtPic.Text));
+         DisplayFileFromServer(new Uri("ftp://olegkret.somee.com/www.OlegKret.somee.com/BOOOOK/App_Data/Users/Photo/" + txtPic.Text), "OlegKret", "26021982OlegKret");
             //AccountClient accountClient = new AccountClient();
             //var a = accountClient.DownloadFile("ftp://olegkret.somee.com/www.OlegKret.somee.com/BOOOOK/App_Data/Users/Photo/" + txtPic.Text);
 
@@ -439,18 +439,18 @@ namespace BookServise
             //pictureBox1.Image = ByteToImage(myDataBuffer);
         }
 
-        public bool DisplayFileFromServer(Uri serverUri)
+        public bool DisplayFileFromServer(Uri serverUri, string login, string password)
         {
             // The serverUri parameter should start with the ftp:// scheme.
             if (serverUri.Scheme != Uri.UriSchemeFtp)
             {
                 return false;
             }
-            // Get the object used to communicate with the server.
+            // Get the object used to communicate with the server. 
             WebClient request = new WebClient();
 
             // This example assumes the FTP site uses anonymous logon.
-            request.Credentials = new NetworkCredential("OlegKret", "26021982OlegKret");
+            request.Credentials = new NetworkCredential(login, password);
             try
             {
                 byte[] newFileData = request.DownloadData(serverUri.ToString());
@@ -578,9 +578,9 @@ namespace BookServise
             request.Credentials = new NetworkCredential("OlegKret", "26021982OlegKret");
 
             // Copy the contents of the file to the request stream.
-            byte[] fileContents=File.ReadAllBytes(@"C:\Users\MegaBoss\Pictures\Viber\" + txtPic.Text);
-           
-
+            byte[] fileContents=File.ReadAllBytes(ofd.FileName);
+          
+            
             request.ContentLength = fileContents.Length;
 
             using (Stream requestStream = request.GetRequestStream())
