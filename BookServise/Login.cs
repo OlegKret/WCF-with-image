@@ -397,7 +397,7 @@ namespace BookServise
             request.Credentials = new NetworkCredential("OlegKret", "26021982OlegKret");
 
             // Copy the contents of the file to the request stream.
-            byte[] fileContents=File.ReadAllBytes(@"C:\Users\MegaBoss\Pictures\Viber\" + txtPic.Text);
+            byte[] fileContents=File.ReadAllBytes(ofd.FileName);
           
             
             request.ContentLength = fileContents.Length;
